@@ -1,7 +1,14 @@
-﻿Imports System.Reflection
+Imports System.Reflection
 
 Public MustInherit Class Part
     Protected _input_parameters As Dictionary(Of String, Object)
+    Protected _is_design_compete_record As New Dictionary(Of String, Boolean)
+
+    Protected Sub intialize()
+        extractInputs()
+        createRecord()
+    End Sub
+
 
     Protected Sub extractInputs()
         Dim fields As FieldInfo() = Me.GetType().GetRuntimeFields
@@ -40,6 +47,13 @@ Public MustInherit Class Part
     Private Sub addToInputParameters(field As FieldInfo)
         _input_parameters.Add(field.Name, field.GetValue(Me).value)
     End Sub
+
+    Protected Sub createRecord()
+        Dim fields As FieldInfo() = Me.GetType().GetRuntimeFields
+        For Each field As FieldInfo In fields
+            If field.FieldType = GetType(DesignOutput) Then
+                _is_design_compete_record.Add(field.Name, False)
+            End If
+        Next
+    End Sub
 End Class
-
-
